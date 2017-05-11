@@ -30,6 +30,9 @@ KCOV_INSTRUMENT_extable.o := n
 KCOV_INSTRUMENT_kcov.o := n
 KASAN_SANITIZE_kcov.o := n
 
+# Don't instrument error handlers
+CFLAGS_cfi.o = $(DISABLE_CFI_CLANG)
+
 obj-y += sched/
 obj-y += locking/
 obj-y += power/
@@ -101,6 +104,7 @@ obj-$(CONFIG_IRQ_WORK) += irq_work.o
 obj-$(CONFIG_CPU_PM) += cpu_pm.o
 obj-$(CONFIG_BPF) += bpf/
 obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
+obj-$(CONFIG_CFI_CLANG) += cfi.o
 
 obj-$(CONFIG_PERF_EVENTS) += events/
 
