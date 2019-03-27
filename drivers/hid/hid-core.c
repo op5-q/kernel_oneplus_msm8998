@@ -543,14 +543,6 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
 	}
 	return 0;
 }
-
-/*
- * Concatenate Usage Pages into Usages where relevant:
- * As per specification, 6.2.2.8: "When the parser encounters a main item it
- * concatenates the last declared Usage Page with a Usage to form a complete
- * usage value."
- */
-
 static void hid_concatenate_last_usage_page(struct hid_parser *parser)
 {
 	int i;
@@ -580,6 +572,21 @@ static void hid_concatenate_last_usage_page(struct hid_parser *parser)
 }
 
 /*
+ * Concatenate Usage Pages into Usages where relevant:
+ * As per specification, 6.2.2.8: "When the parser encounters a main item it
+ * concatenates the last declared Usage Page with a Usage to form a complete
+ * usage value."
+ */
+static void hid_concatenate_usage_page(struct hid_parser *parser)
+{
+	int i;
+
+	for (i = 0; i < parser->local.usage_index; i++)
+		if (parser->local.usage_size[i] <= 2)
+			parser->local.usage[i] += parser->global.usage_page << 16;
+}
+
+/*
  * Process a main item.
  */
 
@@ -587,6 +594,7 @@ static int hid_parser_main(struct hid_parser *parser, struct hid_item *item)
 {
 	__u32 data;
 	int ret;
+
 	hid_concatenate_usage_page(parser);
 
 	data = item_udata(item);
@@ -805,6 +813,7 @@ static int hid_scan_main(struct hid_parser *parser, struct hid_item *item)
 {
 	__u32 data;
 	int i;
+
 	hid_concatenate_usage_page(parser);
 
 	data = item_udata(item);
