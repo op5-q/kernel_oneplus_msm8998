@@ -84,7 +84,7 @@ static u32 get_alt_insn(struct alt_instr *alt, u32 *insnptr, u32 *altinsnptr)
 	return insn;
 }
 
-static void __apply_alternatives(void *alt_region)
+static void __nocfi __apply_alternatives(void *alt_region)
 {
 	struct alt_instr *alt;
 	struct alt_region *region = alt_region;
