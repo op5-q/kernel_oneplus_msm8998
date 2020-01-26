@@ -291,7 +291,6 @@ static int simple_lmk_init_set(const char *val, const struct kernel_param *kp)
 {
 	static atomic_t init_done = ATOMIC_INIT(0);
 	struct task_struct *thread;
-
 	if (!atomic_cmpxchg(&init_done, 0, 1)) {
 		thread = kthread_run_perf_critical(simple_lmk_reclaim_thread, NULL, 
 						"simple_lmkd");
